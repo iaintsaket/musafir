@@ -101,6 +101,11 @@ h3 {
   margin: 0;
   line-height: 1.1;
 }
+.brand {
+  font-size: clamp(2rem, 6vw, 2.75rem);
+  color: var(--board-ink);
+  letter-spacing: 0.04em;
+}
 h2 {
   font-size: 1.6rem;
 }

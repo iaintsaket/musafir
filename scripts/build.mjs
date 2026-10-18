@@ -70,6 +70,12 @@ export function checkUniqueTopLevelNames(modules) {
   }
 }
 
+/** Replace the tag matched by `re` with `content`, failing loudly if the tag isn't there. */
+function inline(html, re, content) {
+  if (!re.test(html)) throw new Error(`src/index.html: expected a tag matching ${re}`);
+  return html.replace(re, () => content);
+}
+
 export function bundle() {
   const modules = moduleOrder(join(SRC, "js", "app.js")).map((file) => ({
     name: rel(file),
@@ -86,8 +92,8 @@ export function bundle() {
 
   const css = readFileSync(join(SRC, "styles.css"), "utf8");
   let html = readFileSync(join(SRC, "index.html"), "utf8");
-  html = html.replace(/<link rel="stylesheet" href="styles\.css">/, () => `<style>\n${css}</style>`);
-  html = html.replace(/<script type="module" src="js\/app\.js"><\/script>/, () => `<script>\n${script}\n</script>`);
+  html = inline(html, /<link\s+rel="stylesheet"\s+href="styles\.css"\s*\/?>/, `<style>\n${css}</style>`);
+  html = inline(html, /<script\s+type="module"\s+src="js\/app\.js"\s*><\/script>/, `<script>\n${script}\n</script>`);
   return html;
 }
 
