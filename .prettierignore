@@ -1,0 +1,4 @@
+dist/
+node_modules/
+src/js/data/all-stations.js
+test/fixtures/

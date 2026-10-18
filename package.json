@@ -1,0 +1,22 @@
+{
+  "name": "musafir",
+  "version": "1.0.0",
+  "private": true,
+  "license": "UNLICENSED",
+  "description": "Indian Railways route planner: direct trains and connections inside an arrival window, with live data from erail.in.",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "build:stations": "node scripts/build-stations.mjs",
+    "serve": "node server/server.mjs",
+    "test": "node --test \"test/*.test.mjs\"",
+    "lint": "npx --yes eslint@9.13.0 .",
+    "format": "npx --yes prettier@3.3.3 --write .",
+    "check": "npm run format:check && npm run lint && npm test && npm run build",
+    "test:e2e": "node test/e2e/browser.e2e.mjs",
+    "format:check": "npx --yes prettier@3.3.3 --check ."
+  }
+}
