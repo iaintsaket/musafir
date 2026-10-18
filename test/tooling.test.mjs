@@ -30,7 +30,8 @@ test("moduleOrder puts dependencies before the modules that use them", () => {
 test("bundle produces one self-contained page that parses", () => {
   const html = bundle();
   assert.match(html, /^<!doctype html>/);
-  assert.doesNotMatch(html, /<link rel="stylesheet" href="styles\.css">/);
+  assert.doesNotMatch(html, /href="styles\.css"/, "stylesheet link was replaced");
+  assert.match(html, /<style>\n[\s\S]*--board-ink/, "stylesheet is inlined");
   assert.doesNotMatch(html, /<script type="module"/);
   const script = html.match(/<script>\n([\s\S]*)\n<\/script>/)[1];
   assert.doesNotMatch(script, /^\s*(import|export) /m);

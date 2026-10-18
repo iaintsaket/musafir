@@ -101,6 +101,22 @@ h3 {
   margin: 0;
   line-height: 1.1;
 }
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.35em;
+  font-family: "Bungee", var(--display);
+  font-weight: 400;
+  font-size: clamp(2.75rem, 10vw, 4.5rem);
+  line-height: 1;
+  color: var(--board-ink);
+  letter-spacing: 0.02em;
+}
+.brand-icon {
+  width: 1em;
+  height: 1em;
+  flex: none;
+}
 h2 {
   font-size: 1.6rem;
 }
