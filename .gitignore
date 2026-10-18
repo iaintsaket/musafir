@@ -1,0 +1,25 @@
+# Build output (npm run build)
+dist/
+
+# Dependencies and tool caches
+node_modules/
+.npm/
+.eslintcache
+
+# Secrets and local settings: never commit these
+.env
+.env.*
+*.pem
+*.key
+secrets.*
+
+# OS and editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+
+# Logs
+*.log
+npm-debug.log*
