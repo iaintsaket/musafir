@@ -1,0 +1,10 @@
+{
+  "all": true,
+  "include": ["src/js/lib/**", "src/js/core/**", "src/js/live/**", "scripts/build.mjs"],
+  "reporter": ["text", "text-summary"],
+  "check-coverage": true,
+  "lines": 90,
+  "statements": 90,
+  "functions": 90,
+  "branches": 90
+}

@@ -23,16 +23,17 @@ npm run build          # writes dist/musafir.html
 open dist/musafir.html # or double-click it
 ```
 
-| Command                  | What it does                                                                                  |
-| ------------------------ | --------------------------------------------------------------------------------------------- |
-| `npm run build`          | Bundle `src/` into the single file `dist/musafir.html`                                        |
-| `npm test`               | Unit and integration tests (`node:test`)                                                      |
-| `npm run test:e2e`       | Drive the built page in headless Chrome, with erail.in answered from a fixture (needs Chrome) |
-| `npm run lint`           | ESLint for real mistakes (undefined names, unused code)                                       |
-| `npm run format`         | Prettier                                                                                      |
-| `npm run check`          | Everything CI runs: format check, lint, tests, build, browser test                            |
-| `npm run serve`          | Local server: the bundle at `/`, the unbundled source at `/dev/`                              |
-| `npm run build:stations` | Regenerate the all-India station list from the datameet dataset                               |
+| Command                  | What it does                                                                                                |
+| ------------------------ | ----------------------------------------------------------------------------------------------------------- |
+| `npm run build`          | Bundle `src/` into the single file `dist/musafir.html`                                                      |
+| `npm test`               | Unit and integration tests (`node:test`)                                                                    |
+| `npm run test:e2e`       | Drive the built page in headless Chrome, with erail.in answered from a fixture (needs Chrome)               |
+| `npm run lint`           | ESLint for real mistakes (undefined names, unused code)                                                     |
+| `npm run format`         | Prettier                                                                                                    |
+| `npm run test:coverage`  | Tests with coverage; fails below 90% (lines, branches, functions) for `lib`, `core`, `live` and the bundler |
+| `npm run check`          | Everything CI runs: format check, lint, tests with the coverage gate, build                                 |
+| `npm run serve`          | Local server: the bundle at `/`, the unbundled source at `/dev/`                                            |
+| `npm run build:stations` | Regenerate the all-India station list from the datameet dataset                                             |
 
 ## Architecture
 

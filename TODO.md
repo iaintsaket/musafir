@@ -8,8 +8,6 @@ Work still open from architect review round 1. Remove items as they land.
       no doubling back, no leaving a train that continues to the destination, no re-boarding the same train.
 - [ ] `latestRun` validity edges (`validFrom` / `validTo`, running days).
 - [ ] Step cap: `plan({ ...q, maxSteps: 10 })` returns `truncated: true`.
-- [ ] `buildQuery` fallbacks (start/destination with no trains → nearest stations, widened radius).
-- [ ] `loosenings` / `newRoutes` / `rankLoosenings` / `scoreLoosening` in `core/suggest.js`.
 - [ ] Escaping: `journeySteps`, `journeyText`, `ticketHtml` with a train named `<img src=x onerror=alert(1)>"`.
 - [ ] `sanitizeSettings`: null classes, bad dates, unknown station, out-of-range sliders.
 - [ ] Build: `checkModuleSyntax` rejects each unsupported form; `checkUniqueTopLevelNames` catches duplicates.
