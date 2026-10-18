@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Musafir</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="wrap">
+      <header class="board">
+        <div class="eyebrow">Train route planner · direct and with changes</div>
+        <div class="od">
+          <div class="ctl ac">
+            <label for="from">From</label
+            ><input
+              id="from"
+              role="combobox"
+              aria-autocomplete="list"
+              aria-expanded="false"
+              aria-controls="from-list"
+              autocomplete="off"
+              spellcheck="false"
+              placeholder="Type a station or code"
+            />
+            <ul class="ac-list" id="from-list" role="listbox" hidden></ul>
+          </div>
+          <button class="swap" id="swap" type="button" aria-label="Swap from and to">⇄</button>
+          <div class="ctl ac">
+            <label for="to">To</label
+            ><input
+              id="to"
+              role="combobox"
+              aria-autocomplete="list"
+              aria-expanded="false"
+              aria-controls="to-list"
+              autocomplete="off"
+              spellcheck="false"
+              placeholder="Type a station or code"
+            />
+            <ul class="ac-list" id="to-list" role="listbox" hidden></ul>
+          </div>
+        </div>
+        <p class="notice" id="notice" hidden></p>
+        <div class="controls">
+          <div class="ctl">
+            <label for="earliest">Arrive no earlier than</label><input type="datetime-local" id="earliest" />
+          </div>
+          <div class="ctl"><label for="deadline">Arrive by</label><input type="datetime-local" id="deadline" /></div>
+          <div class="ctl">
+            <label for="radius">Board within <output id="radiusOut"></output></label>
+            <input type="range" id="radius" min="0" max="400" step="10" />
+            <span class="hint">Stations this far from your start, reached by road</span>
+          </div>
+          <div class="ctl">
+            <label for="destRadius">Get off within <output id="destRadiusOut"></output></label>
+            <input type="range" id="destRadius" min="0" max="200" step="5" />
+            <span class="hint">Finish the last stretch to your destination by road</span>
+          </div>
+          <div class="ctl">
+            <label for="speed">Road speed <output id="speedOut"></output></label>
+            <input type="range" id="speed" min="25" max="70" step="5" />
+          </div>
+          <div class="ctl">
+            <label for="buffer">Connection buffer <output id="bufferOut"></output></label>
+            <input type="range" id="buffer" min="15" max="240" step="15" />
+            <span class="hint">Minimum time between arriving and the next departure</span>
+          </div>
+          <div class="ctl">
+            <label for="maxWait">Longest wait at a change <output id="maxWaitOut"></output></label>
+            <input type="range" id="maxWait" min="2" max="24" step="1" />
+          </div>
+          <div class="ctl">
+            <label for="safe">Safe arrival margin <output id="safeOut"></output></label>
+            <input type="range" id="safe" min="0" max="12" step="1" />
+            <span class="hint">Routes arriving closer to your deadline are flagged</span>
+          </div>
+          <div class="ctl">
+            <label for="changes">Changes allowed</label>
+            <select id="changes">
+              <option value="0">Direct only</option>
+              <option value="1">Up to 1 change</option>
+              <option value="2">Up to 2 changes</option>
+            </select>
+          </div>
+          <div class="ctl">
+            <span class="lab">Class</span>
+            <div class="checks" id="classes">
+              <label><input type="checkbox" id="c1A" value="1A" /> 1A</label>
+              <label><input type="checkbox" id="c2A" value="2A" /> 2A</label>
+              <label><input type="checkbox" id="c3A" value="3A" /> 3A</label>
+              <label><input type="checkbox" id="cSL" value="SL" /> SL</label>
+            </div>
+            <label class="checks" for="shortOk" style="text-transform: none; letter-spacing: 0"
+              ><span
+                style="
+                  display: inline-flex;
+                  gap: 6px;
+                  align-items: center;
+                  font-size: 0.82rem;
+                  color: #e9edf5;
+                  font-weight: 500;
+                "
+                ><input type="checkbox" id="shortOk" /> Allow chair car / 2S on legs under 10 h</span
+              ></label
+            >
+          </div>
+        </div>
+        <div class="go-row">
+          <button type="button" class="go" id="go">Search trains</button>
+          <span class="pending" id="pending" aria-live="polite"></span>
+        </div>
+        <p class="summary" id="summary" aria-live="polite"></p>
+        <p class="live" id="live" aria-live="polite"></p>
+      </header>
+
+      <section class="sec">
+        <h2>Journey chart</h2>
+        <p>
+          Each bar is one route from leaving your start to arriving. The green band is your arrival window. Click a bar
+          to jump to that route.
+        </p>
+        <div class="chart-box">
+          <div class="chart" id="chart"></div>
+          <div class="legend">
+            <span><i style="background: var(--rail)"></i>Train</span>
+            <span><i style="background: var(--road); height: 5px"></i>Road / cross-city transfer</span>
+            <span><i style="background: var(--wait); height: 4px"></i>Waiting</span>
+            <span><i style="background: var(--ok-soft); border: 1px solid var(--ok)"></i>Arrival window</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="sec">
+        <div class="sec-head"><h2>Routes found</h2></div>
+        <div class="suggest" id="suggest" aria-live="polite" hidden></div>
+        <div class="bar">
+          <div class="filters" id="filters" role="group" aria-label="Filter by number of changes"></div>
+          <label class="sort" for="sortBy"
+            >Sort by
+            <select id="sortBy">
+              <option value="rec">Recommended</option>
+              <option value="leave">Leave latest</option>
+              <option value="dur">Shortest door to door</option>
+              <option value="margin">Biggest margin</option>
+              <option value="changes">Fewest changes</option>
+            </select>
+          </label>
+        </div>
+        <div class="routes" id="routes"></div>
+      </section>
+
+      <section class="sec">
+        <h2>Built-in trains</h2>
+        <p>
+          These timetables are always available. When erail.in can be reached, each search also adds live trains for the
+          stations involved. You can pick any of India's 8,700 stations; if no known train stops at yours, the planner
+          starts or ends your trip by road at the nearest station that has one.
+        </p>
+        <details class="db">
+          <summary>Show all <span id="trainCount"></span> trains</summary>
+          <div class="tbl-box">
+            <table>
+              <thead>
+                <tr>
+                  <th>Train</th>
+                  <th>Route</th>
+                  <th>Runs (from origin)</th>
+                  <th>Classes</th>
+                </tr>
+              </thead>
+              <tbody id="trainList"></tbody>
+            </table>
+          </div>
+        </details>
+      </section>
+
+      <footer class="foot">
+        <p>
+          <b>Check before you book.</b> Built-in timetables were copied from ConfirmTkt and RailMitra in October 2026;
+          live timetables come from erail.in. These are unofficial third-party sources. Confirm every train and seat on
+          IRCTC or NTES (enquiry.indianrail.gov.in) before paying.
+        </p>
+        <ul>
+          <li>
+            Nearby stations use straight-line distance × 1.3 as a road estimate. Road time is that distance divided by
+            your road speed. Station list and coordinates:
+            <a href="https://github.com/datameet/railways">datameet/railways</a> (CC0).
+          </li>
+          <li>
+            Changing between stations in the same city (Howrah ↔ Santragachi or Dankuni, Ranchi ↔ Hatia, Kharagpur ↔
+            Hijli, Jasidih ↔ Deoghar, SMVT ↔ KR Puram) adds a cab transfer of 20–75 min on top of your connection
+            buffer.
+          </li>
+          <li>
+            Each route uses the latest run of its final train that lands in your window, and the latest earlier trains
+            that still connect.
+          </li>
+          <li>
+            Reservations open 60 days before a train leaves its origin station. Your settings are saved in this browser
+            only. The page contacts erail.in (live trains) and Google Fonts (typefaces).
+          </li>
+        </ul>
+      </footer>
+    </div>
+
+    <script type="module" src="js/app.js"></script>
+  </body>
+</html>
